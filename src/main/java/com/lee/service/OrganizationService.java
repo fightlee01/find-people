@@ -17,5 +17,5 @@ import java.util.Map;
  */
 public interface OrganizationService extends IService<Organization> {
 
-    List<Map<String, Float>> getPossibleOrganizationFromOrganization(AcceptRule acceptRule);
+    Map<String, Float> getPossibleOrganizationFromOrganization(AcceptRule acceptRule);
 }

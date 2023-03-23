@@ -25,8 +25,8 @@ import java.util.Map;
 public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> implements MemberService {
 
     @Override
-    public List<Map<String, Float>> getPossibleOrganizationFromMember(AcceptRule acceptRule) {
-        List<Map<String, Float>> result = new ArrayList<>();
+    public Map<String, Float> getPossibleOrganizationFromMember(AcceptRule acceptRule) {
+        Map<String, Float> result = new HashMap<>();
         if(acceptRule.getName() != null) {
             String name = (String) acceptRule.getName().get("value");
             Double weight = (Double) acceptRule.getName().get("weight");
@@ -36,16 +36,19 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     }
 
     private void getPossibleOrgViaName(
-            List<Map<String, Float>> result,
+            Map<String, Float> result,
             String name,
             Float weight) {
         QueryWrapper<Member> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("membername_en", name);
         List<Member> list = this.list(queryWrapper);
         for(Member member:list) {
-            Map<String, Float> map = new HashMap<>();
-            map.put(member.getMemberOrginization(), weight);
-            result.add(map);
+            if(result.containsKey(member.getMemberOrginization())) {
+                float originWeight = result.get(member.getMemberOrginization());
+                result.replace(member.getMemberOrginization(), originWeight+weight);
+            } else {
+                result.put(member.getMemberOrginization(), weight);
+            }
         }
     }
 }

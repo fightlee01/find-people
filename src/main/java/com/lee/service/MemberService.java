@@ -17,5 +17,5 @@ import java.util.Map;
  */
 public interface MemberService extends IService<Member> {
 
-    List<Map<String, Float>> getPossibleOrganizationFromMember(AcceptRule acceptRule);
+    Map<String, Float> getPossibleOrganizationFromMember(AcceptRule acceptRule);
 }
