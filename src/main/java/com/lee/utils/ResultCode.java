@@ -1,4 +1,4 @@
-package com.lee.findpeople.utils;
+package com.lee.utils;
 
 public interface ResultCode {
     public static Integer SUCCESS = 2000;

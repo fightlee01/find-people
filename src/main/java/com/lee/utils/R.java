@@ -1,4 +1,4 @@
-package com.lee.findpeople.utils;
+package com.lee.utils;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
