@@ -25,17 +25,17 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Org
     @Override
     public Map<String, Float> getPossibleOrganizationFromOrganization(AcceptRule acceptRule) {
         Map<String, Float> result = new HashMap<>();
-        if (acceptRule.getCountry() != null) {
+        if (acceptRule.getCountry().get("value") != null) {
             String country = (String) acceptRule.getCountry().get("value");
             Double weight = (Double) acceptRule.getCountry().get("weight");
             this.getPossibleOrgViaCountry(result, country, weight.floatValue());
         }
-        if (acceptRule.getEmail() != null) {
+        if (acceptRule.getEmail().get("value") != null) {
             String email = (String) acceptRule.getEmail().get("value");
             Double weight = (Double) acceptRule.getEmail().get("weight");
             this.getPossibleOrgViaEmail(result, email, weight.floatValue());
         }
-        if (acceptRule.getPhone() != null) {
+        if (acceptRule.getPhone().get("value") != null) {
             String phone = (String) acceptRule.getPhone().get("value");
             Double weight = (Double) acceptRule.getPhone().get("weight");
             this.getPossibleOrgViaPhone(result, phone, weight.floatValue());

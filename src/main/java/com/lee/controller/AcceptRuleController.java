@@ -34,6 +34,6 @@ public class AcceptRuleController {
         Map<String, Float> possibleOrganizationFromOrganization = organizationService.getPossibleOrganizationFromOrganization(acceptRule);
         Map<String, Float> result = MergeOrg.mergeOrgForTwoWay(possibleOrganizationFromMember,
                 possibleOrganizationFromOrganization);
-        return R.ok().data("possibleOrg", result);
+        return R.ok().data("possibleOrg", result).data("sdsa", result);
     }
 }

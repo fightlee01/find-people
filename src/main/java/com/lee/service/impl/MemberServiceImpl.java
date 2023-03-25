@@ -27,7 +27,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     @Override
     public Map<String, Float> getPossibleOrganizationFromMember(AcceptRule acceptRule) {
         Map<String, Float> result = new HashMap<>();
-        if(acceptRule.getName() != null) {
+        if(acceptRule.getName().get("value") != null) {
             String name = (String) acceptRule.getName().get("value");
             Double weight = (Double) acceptRule.getName().get("weight");
             this.getPossibleOrgViaName(result, name, weight.floatValue());
