@@ -1,8 +1,9 @@
 package com.lee.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.lee.beans.AcceptRule;
+import com.lee.beans.vo.AcceptRule;
 import com.lee.beans.Organization;
+import com.lee.exceptionhandler.FindPeopleException;
 import com.lee.mapper.OrganizationMapper;
 import com.lee.service.OrganizationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -10,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static com.lee.utils.ResultCode.PARAM_ERROR;
 
 /**
  * <p>
@@ -23,27 +26,41 @@ import java.util.*;
 public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Organization> implements OrganizationService {
 
     @Override
-    public Map<String, Float> getPossibleOrganizationFromOrganization(AcceptRule acceptRule) {
-        Map<String, Float> result = new HashMap<>();
+    public Map<String, List<String>> getPossibleOrganizationFromOrganization(AcceptRule acceptRule) {
+        // 存储每个字段的结果，格式为：{"name": [], "phone": [], "email": [], ...}
+        Map<String, List<String>> result = new HashMap<>();
+
         if (acceptRule.getCountry().get("value") != null) {
-            String country = (String) acceptRule.getCountry().get("value");
-            Double weight = (Double) acceptRule.getCountry().get("weight");
-            this.getPossibleOrgViaCountry(result, country, weight.floatValue());
+            try {
+                String country = (String) acceptRule.getCountry().get("value");
+                String rule = (String) acceptRule.getCountry().get("rule");
+                this.getPossibleOrgViaCountry(result, country, rule);
+            } catch (Exception e) {
+                throw new FindPeopleException(PARAM_ERROR, "参数传递错误！！！");
+            }
         }
         if (acceptRule.getEmail().get("value") != null) {
-            String email = (String) acceptRule.getEmail().get("value");
-            Double weight = (Double) acceptRule.getEmail().get("weight");
-            this.getPossibleOrgViaEmail(result, email, weight.floatValue());
+            try {
+                String email = (String) acceptRule.getEmail().get("value");
+                String rule = (String) acceptRule.getEmail().get("rule");
+                this.getPossibleOrgViaEmail(result, email, rule);
+            } catch (Exception e) {
+                throw new FindPeopleException(PARAM_ERROR, "参数传递错误！！！");
+            }
         }
         if (acceptRule.getPhone().get("value") != null) {
-            String phone = (String) acceptRule.getPhone().get("value");
-            Double weight = (Double) acceptRule.getPhone().get("weight");
-            this.getPossibleOrgViaPhone(result, phone, weight.floatValue());
+            try {
+                String phone = (String) acceptRule.getPhone().get("value");
+                String rule = (String) acceptRule.getPhone().get("rule");
+                this.getPossibleOrgViaPhone(result, phone, rule);
+            } catch (Exception e) {
+                throw new FindPeopleException(PARAM_ERROR, "参数传递错误！！！");
+            }
         }
         return result;
     }
 
-    private void getPossibleOrgViaPhone(Map<String, Float> result, String phone, Float weight) {
+    private void getPossibleOrgViaPhone(Map<String, List<String>> result, String phone, String rule) {
         List<Organization> list = this.list(null);
         String maxSimilarityOrgName = "";
         double maxSimilarity = 0d;
@@ -55,47 +72,44 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Org
                 maxSimilarityOrgName = organization.getOrgnameEn();
             }
         }
-        if(result.containsKey(maxSimilarityOrgName)) {
-            float originWeight = result.get(maxSimilarityOrgName);
-            result.replace(maxSimilarityOrgName, originWeight+weight);
-        } else {
-            result.put(maxSimilarityOrgName, weight);
-        }
+        List<String> resultList = new ArrayList<>();
+        resultList.add(maxSimilarityOrgName);
+        result.put("phone", resultList);
     }
 
-    private void getPossibleOrgViaEmail(Map<String, Float> result, String email, Float weight) {
+    private void getPossibleOrgViaEmail(Map<String, List<String>> result, String email, String rule) {
         List<String> excludeEmail = new ArrayList<>(Arrays.asList(
                 "gmail.com", "qq.com", "163.com", "foxmail.com", "microsoft.com"));
         email = email.split("@")[1];
-        if (excludeEmail.contains(email)) {
-            weight = weight / 10;
+        // 判断是否需要排除公用邮箱，如果传入的是公用邮箱且用户需要排除公用邮箱时结束程序
+        if (rule.equals("true") && excludeEmail.contains(email)) {
+            return;
         }
+        // 查找的邮箱不是公用邮箱或者用户不排除公用邮箱，继续查找
         List<Organization> list = this.list(null);
+        List<String> resultList = new ArrayList<>();
         for (Organization organization : list) {
             boolean contains = organization.getOrgMail().contains(email);
             if (contains && !organization.getOrgnameEn().equals("")) {
-                if(result.containsKey(organization.getOrgnameEn())) {
-                    float originWeight = result.get(organization.getOrgnameEn());
-                    result.replace(organization.getOrgnameEn(), originWeight+weight);
-                } else {
-                    result.put(organization.getOrgnameEn(), weight);
-                }
-
+                resultList.add(organization.getOrgnameEn());
             }
         }
+        result.put("email", resultList);
     }
 
-    private void getPossibleOrgViaCountry(Map<String, Float> result, String country, Float weight) {
+    private void getPossibleOrgViaCountry(Map<String, List<String>> result, String country, String rule) {
         QueryWrapper<Organization> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("org_country", country);
-        List<Organization> list = this.list(queryWrapper);
-        for (Organization organization : list) {
-            if(result.containsKey(organization.getOrgnameEn())) {
-                float originWeight = result.get(organization.getOrgnameEn());
-                result.replace(organization.getOrgnameEn(), originWeight+weight);
-            } else {
-                result.put(organization.getOrgnameEn(), weight);
-            }
+        // 判断是精确查找还是模糊查找
+        if(rule.equals("精确查找")) {
+            queryWrapper.eq("org_country", country);
+        } else {
+            queryWrapper.like("org_country", country);
         }
+        List<Organization> list = this.list(queryWrapper);
+        List<String> countryList = new ArrayList<>();
+        for (Organization organization : list) {
+            countryList.add(organization.getOrgnameEn());
+        }
+        result.put("country", countryList);
     }
 }

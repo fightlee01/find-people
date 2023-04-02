@@ -1,6 +1,6 @@
 package com.lee.service;
 
-import com.lee.beans.AcceptRule;
+import com.lee.beans.vo.AcceptRule;
 import com.lee.beans.Organization;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,5 +17,5 @@ import java.util.Map;
  */
 public interface OrganizationService extends IService<Organization> {
 
-    Map<String, Float> getPossibleOrganizationFromOrganization(AcceptRule acceptRule);
+    Map<String, List<String>> getPossibleOrganizationFromOrganization(AcceptRule acceptRule);
 }

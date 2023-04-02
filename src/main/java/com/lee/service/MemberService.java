@@ -1,10 +1,9 @@
 package com.lee.service;
 
-import com.lee.beans.AcceptRule;
+import com.lee.beans.vo.AcceptRule;
 import com.lee.beans.Member;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
 import java.util.Map;
 
 /**

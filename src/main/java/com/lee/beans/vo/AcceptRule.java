@@ -1,4 +1,4 @@
-package com.lee.beans;
+package com.lee.beans.vo;
 
 import lombok.Data;
 
