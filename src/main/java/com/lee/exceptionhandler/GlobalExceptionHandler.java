@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public R error() {
+    public R error(Exception e) {
+        e.printStackTrace();
         return R.error().message("内部服务错误！！！");
     }
 

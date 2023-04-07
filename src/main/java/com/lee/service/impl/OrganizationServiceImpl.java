@@ -30,30 +30,34 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Org
         // 存储每个字段的结果，格式为：{"name": [], "phone": [], "email": [], ...}
         Map<String, List<String>> result = new HashMap<>();
 
-        if (acceptRule.getCountry().get("value") != null) {
+
+        if (acceptRule.getCountry() != null && acceptRule.getCountry().get("value") != null) {
             try {
                 String country = (String) acceptRule.getCountry().get("value");
                 String rule = (String) acceptRule.getCountry().get("rule");
                 this.getPossibleOrgViaCountry(result, country, rule);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new FindPeopleException(PARAM_ERROR, "参数传递错误！！！");
             }
         }
-        if (acceptRule.getEmail().get("value") != null) {
+        if (acceptRule.getEmail() != null && acceptRule.getEmail().get("value") != null) {
             try {
                 String email = (String) acceptRule.getEmail().get("value");
                 String rule = (String) acceptRule.getEmail().get("rule");
                 this.getPossibleOrgViaEmail(result, email, rule);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new FindPeopleException(PARAM_ERROR, "参数传递错误！！！");
             }
         }
-        if (acceptRule.getPhone().get("value") != null) {
+        if (acceptRule.getPhone() != null && acceptRule.getPhone().get("value") != null) {
             try {
                 String phone = (String) acceptRule.getPhone().get("value");
                 String rule = (String) acceptRule.getPhone().get("rule");
                 this.getPossibleOrgViaPhone(result, phone, rule);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new FindPeopleException(PARAM_ERROR, "参数传递错误！！！");
             }
         }
@@ -105,6 +109,7 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Org
         } else {
             queryWrapper.like("org_country", country);
         }
+        System.out.println(country);
         List<Organization> list = this.list(queryWrapper);
         List<String> countryList = new ArrayList<>();
         for (Organization organization : list) {

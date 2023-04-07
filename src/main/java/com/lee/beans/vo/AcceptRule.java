@@ -7,9 +7,11 @@ import java.util.Map;
 
 @Data
 public class AcceptRule {
+    private String ruleId;
     private Map<String, Object> name;
     private Map<String, Object> email;
     private Map<String, Object> phone;
     private Map<String, Object> country;
     private Map<String, Object> city;
+    private Map<String, Object> address;
 }

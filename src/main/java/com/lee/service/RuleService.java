@@ -2,6 +2,10 @@ package com.lee.service;
 
 import com.lee.beans.Rule;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lee.beans.vo.CreateRule;
+import com.lee.beans.vo.FindByRule;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RuleService extends IService<Rule> {
 
+    void createRuleToDatabase(CreateRule createRule);
+
+    List<String> findOrganizationByRule(FindByRule findByRule);
 }

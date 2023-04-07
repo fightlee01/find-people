@@ -4,6 +4,7 @@ import com.lee.beans.vo.AcceptRule;
 import com.lee.beans.Member;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,5 @@ import java.util.Map;
  */
 public interface MemberService extends IService<Member> {
 
-    Map<String, Float> getPossibleOrganizationFromMember(AcceptRule acceptRule);
+    Map<String, List<String>> getPossibleOrganizationFromMember(AcceptRule acceptRule);
 }
