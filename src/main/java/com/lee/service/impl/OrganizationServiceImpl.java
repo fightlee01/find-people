@@ -109,7 +109,6 @@ public class OrganizationServiceImpl extends ServiceImpl<OrganizationMapper, Org
         } else {
             queryWrapper.like("org_country", country);
         }
-        System.out.println(country);
         List<Organization> list = this.list(queryWrapper);
         List<String> countryList = new ArrayList<>();
         for (Organization organization : list) {

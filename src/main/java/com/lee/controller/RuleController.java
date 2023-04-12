@@ -33,13 +33,14 @@ import java.util.Map;
 public class RuleController {
     @Autowired
     private RuleService ruleService;
+
     @ApiOperation("创建规则")
     @PostMapping("createRule")
     public R createRule(@ApiParam(value = "规则详情", required = true)
                         @RequestBody CreateRule createRule) {
         System.out.println(createRule.toString());
         ruleService.createRuleToDatabase(createRule);
-        return R.ok().data("ads", createRule.getRuleItems());
+        return R.ok().message("创建规则成功");
     }
 
     @ApiOperation("查找所有已有规则")
@@ -47,7 +48,7 @@ public class RuleController {
     public R findExistRule() {
         List<Rule> rules = ruleService.list(null);
         List<Map<String, Object>> resultData = new ArrayList<>();
-        for (Rule rule:rules) {
+        for (Rule rule : rules) {
             Object result = null;
             Map<String, Object> map = new HashMap<>();
             map.put("ruleName", rule.getRuleName());
@@ -65,6 +66,17 @@ public class RuleController {
             resultData.add(map);
         }
         return R.ok().data("rules", resultData);
+    }
+
+    @ApiOperation("根据id删除规则")
+    @PostMapping("deleteRuleById/{id}")
+    public R deleteRuleById(@PathVariable String id) {
+        boolean isDeleted = ruleService.deleteById(id);
+        if(isDeleted) {
+            return R.ok().message("删除成功");
+        } else {
+            return R.error().message("删除失败");
+        }
     }
 
 }

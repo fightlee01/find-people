@@ -20,4 +20,6 @@ public interface RuleService extends IService<Rule> {
     void createRuleToDatabase(CreateRule createRule);
 
     List<String> findOrganizationByRule(FindByRule findByRule);
+
+    boolean deleteById(String id);
 }

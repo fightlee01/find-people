@@ -55,7 +55,6 @@ public class RuleServiceImpl extends ServiceImpl<RuleMapper, Rule> implements Ru
         // 按照提交的规则id列表依次查找规则
         List<String> ruleIds = findByRule.getRuleIds();
         for(String ids:ruleIds) {
-            AcceptRule acceptRule = new AcceptRule();
             QueryWrapper<Rule> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", ids);
             Rule rule = baseMapper.selectOne(queryWrapper);
@@ -77,4 +76,12 @@ public class RuleServiceImpl extends ServiceImpl<RuleMapper, Rule> implements Ru
         }
         return null;
     }
+
+    @Override
+    public boolean deleteById(String id) {
+        int isDeleted = baseMapper.deleteById(id);
+        return isDeleted > 0;
+    }
+
+
 }

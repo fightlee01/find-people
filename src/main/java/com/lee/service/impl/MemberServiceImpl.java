@@ -56,7 +56,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         }
         List<Member> list = this.list(queryWrapper);
         for (Member member : list) {
-            resultList.add(member.getMemberOrginization());
+            if(member.getMemberOrginization() != null) {
+                resultList.add(member.getMemberOrginization());
+            }
         }
         result.put("name", resultList);
     }

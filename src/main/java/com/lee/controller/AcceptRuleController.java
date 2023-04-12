@@ -44,6 +44,11 @@ public class AcceptRuleController {
                     possibleOrganizationFromOrganization);
             result.put(acceptRule.getRuleId(), resultItem);
         }
+        // System.out.println(result);
+        List<String> intersection = MergeOrg.orgIntersection(result);
+        for(String item:intersection) {
+            result.put("intersection", new HashMap<String, Integer>(){{put(item, 10);}});
+        }
         return R.ok().data("possibleOrg", result);
     }
 
